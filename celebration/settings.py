@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     "map.apps.MapConfig",
     "news.apps.NewsConfig",
     "authentication.apps.AuthenticationConfig",
-    "backstage.apps.BackstageConfig"
+    "book.apps.BookConfig",
+    "bless.apps.BlessConfig"
+    # "backstage.apps.BackstageConfig"
     # "backstage.apps.AdminConfig"
 ]
 
@@ -154,8 +156,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTTokenUserAuthentication',  # 使用rest_framework_simplejwt验证身份
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        # 'rest_framework.permissions.IsAuthenticated'  # 默认权限为验证用户
-        'rest_framework.permissions.AllowAny'
+        'rest_framework.permissions.IsAuthenticated'  # 默认权限为验证用户
+        # 'rest_framework.permissions.AllowAny'
     ],
 }
 
@@ -170,3 +172,5 @@ SIMPLE_JWT = {
 AUTHENTICATION_BACKENDS = [
     'user.views.MyCustomBackend',
 ]
+
+AUTH_USER_MODEL = "user.UserInfo"

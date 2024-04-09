@@ -71,6 +71,7 @@ class ActivityAPIView(APIView):
 
 
 class ActivityDetailAPIView(APIView):
+    permission_classes = [AllowAny]
     def get(self, request, id):
         activity = models.Activity.objects.get(id=id)
         ser = serializer.ActivityDetailSerializer(instance=activity)

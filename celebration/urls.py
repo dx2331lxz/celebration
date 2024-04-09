@@ -31,6 +31,8 @@ urlpatterns = [
     path('api/user/', include('user.urls')),
     path('api/map/', include('map.urls')),
     path('api/news/', include('news.urls')),
+    path('api/book/', include('book.urls')),
+    path('api/bless/', include('bless.urls')),
     path('api/authentication/', include('authentication.urls')),
     path('api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  # 原版
     # 刷新Token有效期的接口
