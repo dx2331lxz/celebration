@@ -4,7 +4,7 @@ from user.models import UserInfo
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, pagination  # 状态和分页
-from rest_framework.parsers import MultiPartParser  # 文件上传`MultiPartParser`解析器
+from rest_framework.parsers import MultiPartParser, JSONParser # 文件上传`MultiPartParser`解析器
 import json
 import os
 
@@ -39,22 +39,48 @@ class BlessAPIView(APIView):
             return Response({'msg': '不存在'}, status=status.HTTP_404_NOT_FOUND)
 
 
+# 上传图片(只用了上传图片，并且返回图片路径)
+class ImageAPIView(APIView):
+    parser_classes = [MultiPartParser, JSONParser]
+
+    # 上传单张图片
+    def post(self, request):
+        photo = request.FILES.get('photo')
+        if not photo:
+            return Response({'code': 403, 'msg': '缺少参数'}, status=status.HTTP_403_FORBIDDEN)
+        image = models.Image.objects.create(image=photo)
+        serializers = serializer.ImageSerializer(image)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+
+    def delete(self, request):
+        id = request.data.get('id')
+        try:
+            image = models.Image.objects.get(id=id)
+            path = image.image.path
+            os.remove(path)
+            image.delete()
+            return Response({'msg': '删除成功'}, status=status.HTTP_200_OK)
+        except models.Image.DoesNotExist:
+            return Response({'msg': '不存在'}, status=status.HTTP_404_NOT_FOUND)
+
+
 class DiscussAPIView(APIView):
     def post(self, request):
         userid = request.user.id
         user = UserInfo.objects.get(id=userid)
         param = request.data
         content = param.get('content')
-        photos = request.FILES.getlist('photos')
+        photos = param.get('photos').split(',')
         discuss = models.Discuss.objects.create(user=user, content=content)
-        for photo in photos:
-            models.Image.objects.create(discuss=discuss, image=photo)
+        for id in photos:
+            id = int(id)
+            models.Image.objects.update_or_create(id=id, defaults={'discuss': discuss})
 
         return Response({'msg': '上传成功'}, status=status.HTTP_200_OK)
 
     def get(self, request):
-        discuss = models.Discuss.objects.all()
-        serializers = serializer.DiscussSerializer(discuss, many=True)
+        discuss = models.Discuss.objects.all().order_by('-create_time')
+        serializers = serializer.DiscussSerializer(discuss, many=True, context={'request': request})
         return Response(serializers.data, status=status.HTTP_200_OK)
 
     def delete(self, request):
@@ -120,9 +146,12 @@ class LikeAPIView(APIView):
         discuss_id = data.get('id')
         if not discuss_id:
             return Response({'code': 403, 'msg': '缺少参数'}, status=status.HTTP_403_FORBIDDEN)
+        if models.Like.objects.filter(user_id=request.user.id, discuss_id=discuss_id).exists():
+            return Response({'msg': '已点赞'}, status=status.HTTP_200_OK)
         try:
             discuss = models.Discuss.objects.get(id=discuss_id)
             discuss.like += 1
+            models.Like.objects.create(user_id=request.user.id, discuss_id=discuss_id)
             discuss.save()
             return Response({'msg': '点赞成功'}, status=status.HTTP_200_OK)
         except models.Discuss.DoesNotExist:
@@ -133,14 +162,15 @@ class LikeAPIView(APIView):
         id = request.data.get('id')
         if not id:
             return Response({'code': 403, 'msg': '缺少参数'}, status=status.HTTP_403_FORBIDDEN)
+        if not models.Like.objects.filter(user_id=request.user.id, discuss_id=id).exists():
+            return Response({'msg': '未点赞'}, status=status.HTTP_200_OK)
         try:
             discuss = models.Discuss.objects.get(id=id)
             if discuss.like == 0:
                 return Response({'msg': '未点赞'}, status=status.HTTP_200_OK)
             discuss.like -= 1
+            models.Like.objects.filter(user_id=request.user.id, discuss_id=id).delete()
             discuss.save()
             return Response({'msg': '取消点赞成功'}, status=status.HTTP_200_OK)
         except models.Discuss.DoesNotExist:
             return Response({'msg': '讨论不存在'}, status=status.HTTP_404_NOT_FOUND)
-
-

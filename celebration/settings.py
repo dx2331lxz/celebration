@@ -174,3 +174,10 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 AUTH_USER_MODEL = "user.UserInfo"
+
+
+EMAIL_HOST = conf.get('email', "EMAIL_HOST")  # 服务器
+EMAIL_PORT = conf.get("email", "EMAIL_PORT")
+EMAIL_HOST_USER = conf.get("email", "EMAIL_HOST_USER")  # 账号
+EMAIL_HOST_PASSWORD = conf.get("email", "EMAIL_HOST_PASSWORD")  # 密码 (注意：这里的密码指的是授权码)
+EMAIL_USE_SSL = conf.get("email", "EMAIL_USE_SSL")  # 一般都为False

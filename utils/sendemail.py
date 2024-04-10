@@ -1,3 +1,14 @@
+from django.core.mail import EmailMultiAlternatives
+from celebration import settings
+from user.models import UserInfo
+
+
+def send_email(identity):
+    recipient = UserInfo.objects.filter(roles=2)
+    recipient_list = [i.email for i in recipient if i.email]
+    subject = f'æ ¡å‹å›å½’å°ç¨‹åºæœ‰æ–°çš„{identity}è®¤è¯å•¦'
+    message = 'çˆ±ç‰¹å·¥ä½œå®¤'
+    html_content = """
 <div style="box-sizing: border-box; width: 98%; margin: 0 auto; max-width: 508px; background-color: #FFFFFF; border: 1px solid #f6f6f6; box-shadow: 0px 0 10px rgba(0, 0, 0, 0.08); border-radius: 8px;">
     <table align="center" border="0" cellpadding="0" cellspacing="0" class="main-table_zZLU" style="width:100%;height:100%"></table>
     <table align="center" border="0" cellpadding="0" cellspacing="0" style="max-width: 508px; width: 100%; margin: 0 auto;">
@@ -15,7 +26,7 @@
         <tbody>
             <tr>
                 <td>
-                    <div style="text-align: center; font-size: 18px; font-weight: bold; margin-top: 20px;">ÈÏÖ¤Í¨Öª</div>
+                    <div style="text-align: center; font-size: 18px; font-weight: bold; margin-top: 20px;">è®¤è¯é€šçŸ¥</div>
                 </td>
             </tr>
         </tbody>
@@ -24,8 +35,8 @@
         <tbody>
             <tr>
                 <td>
-                    <div style="text-align: center; font-size: 16px; margin-top: 20px;">ÓĞĞÂµÄ{}½øĞĞÈÏÖ¤</div>
-                    <div style="text-align: center; font-size: 16px; margin-top: 10px;">ÇëÄú¼°Ê±´¦ÀíÏà¹ØÊÂÒË¡£</div>
+                    <div style="text-align: center; font-size: 16px; margin-top: 20px;">æœ‰æ–°çš„{}è¿›è¡Œè®¤è¯</div>
+                    <div style="text-align: center; font-size: 16px; margin-top: 10px;">è¯·æ‚¨åŠæ—¶å¤„ç†ç›¸å…³äº‹å®œã€‚</div>
                 </td>
             </tr>
         </tbody>
@@ -37,18 +48,24 @@
                 <td style="text-align: center;">
                     <div style="max-width: 508px; margin: 0 auto; padding: 15px 24px 28px;">
                         <div style="font-family: HarmonyOS Sans, SF Pro Text, SF Pro Icons, robot, Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 12px; line-height: 17px; text-align: center; color: #7D7D7D;">
-                            ±¾Ğ¡³ÌĞòÓÉ°®ÌØ¹¤×÷ÊÒ¿ª·¢<br> - Èç¹ûÄú»³ÒÉ×Ô¼ºÊÕµ½ÁËÕ©Æ­ĞÅÏ¢£¬ÇëÁ¢¼´ÁªÏµ¿Í·ş
+                            æœ¬å°ç¨‹åºç”±çˆ±ç‰¹å·¥ä½œå®¤å¼€å‘<br> - å¦‚æœæ‚¨æ€€ç–‘è‡ªå·±æ”¶åˆ°äº†è¯ˆéª—ä¿¡æ¯ï¼Œè¯·ç«‹å³è”ç³»å®¢æœ
                         </div>
                         <div style="margin: 14px auto 12px;">
                             <img src="https://static.coinall.ltd/cdn/oksupport/headImg/20221117/1668687253371.png" style="width: 14px; height: 14px; vertical-align: middle;">
-                            <span style="font-size: 14px; font-family: SF Pro Text, SF Pro Icons, robot, Helvetica Neue, Helvetica, Arial, sans-serif; font-weight: 500; color: #000000; opacity: 0.8;">ÆÚ´ıÓëÄú±£³ÖÁªÏµ</span>
+                            <span style="font-size: 14px; font-family: SF Pro Text, SF Pro Icons, robot, Helvetica Neue, Helvetica, Arial, sans-serif; font-weight: 500; color: #000000; opacity: 0.8;">æœŸå¾…ä¸æ‚¨ä¿æŒè”ç³»</span>
                         </div>
                         <div style="font-size: 11px; font-family: HarmonyOS Sans, SF Pro Text, SF Pro Icons, robot, Helvetica Neue, Helvetica, Arial, sans-serif; color: #7d7d7d; text-align: center; line-height: 17px;">
-                            ¸ĞĞ»ÄúÑ¡Ôñ°®ÌØ¹¤×÷ÊÒ<br> Èç¹ûÓĞÈÎºÎÎÊÌâ£¬ÒÉÂÇ»ò½¨Òé£¬ÇëÁªÏµ°®ÌØ¹¤×÷ÊÒ¿Í·ş
+                            æ„Ÿè°¢æ‚¨é€‰æ‹©çˆ±ç‰¹å·¥ä½œå®¤<br> å¦‚æœæœ‰ä»»ä½•é—®é¢˜ï¼Œç–‘è™‘æˆ–å»ºè®®ï¼Œè¯·è”ç³»çˆ±ç‰¹å·¥ä½œå®¤å®¢æœ
                         </div>
                     </div>
                 </td>
             </tr>
         </tbody>
     </table>
-</div>
+</div>""".format(identity)
+    from_email = settings.EMAIL_HOST_USER
+    mail = EmailMultiAlternatives(subject, message, from_email, recipient_list)
+    if html_content:
+        mail.attach_alternative(html_content, 'text/html')
+
+    return mail.send()

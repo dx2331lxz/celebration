@@ -25,7 +25,7 @@ class Discuss(models.Model):
 
 # 讨论的图片
 class Image(models.Model):
-    discuss = models.ForeignKey('Discuss', on_delete=models.CASCADE, related_name='image')
+    discuss = models.ForeignKey('Discuss', on_delete=models.CASCADE, related_name='image', null=True, blank=True)
     image = models.ImageField(upload_to='discuss', verbose_name='image')
 
     def __str__(self):
@@ -40,3 +40,14 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class Like(models.Model):
+    user = models.ForeignKey('user.UserInfo', on_delete=models.CASCADE, related_name='like_record')
+    discuss = models.ForeignKey('Discuss', on_delete=models.CASCADE, related_name='like_record')
+
+    def __str__(self):
+        return self.user.username
+
+
+
+

@@ -8,5 +8,7 @@ urlpatterns = [
     path('phone/', views.PhoneAPIView.as_view()),
     path('email/', views.EmailAPIView.as_view()),
     path('description/', views.DescriptionAPIView.as_view()),
+    path('wechat/', views.WechatAPIView.as_view()),
+    path('qq/', views.QQAPIView.as_view()),
     path('info/', views.InfoAPIView.as_view()),
 ]

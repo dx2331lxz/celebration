@@ -11,6 +11,8 @@ class News(models.Model):
     image = models.CharField(verbose_name='图片', max_length=200, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
+    # 简介
+    description = models.TextField(verbose_name='描述')
 
     def __str__(self):
         return self.title

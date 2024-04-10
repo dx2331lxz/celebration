@@ -7,7 +7,7 @@ from rest_framework import status, pagination  # 状态和分页
 from rest_framework.parsers import MultiPartParser  # 文件上传`MultiPartParser`解析器
 import json
 import os
-
+from utils.sendemail import send_email
 
 # 学生认证
 
@@ -20,9 +20,9 @@ class StudentAuthenticatedAPIView(APIView):
         return Response(serializers.data)
 
     def post(self, request):
-
         id = request.user.id
         user = UserInfo.objects.get(id=id)
+        # send_email('学生')
         if user.authentication_status != 1:
             return Response({'msg': '请等待回复，不要重复操作'}, status=status.HTTP_400_BAD_REQUEST)
         data = request.data
@@ -34,6 +34,7 @@ class StudentAuthenticatedAPIView(APIView):
 
             user.authentication_status = 2
             user.save()
+            send_email('学生')
             return Response(serializers.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -50,6 +51,7 @@ class TeacherAuthenticatedAPIView(APIView):
 
     def post(self, request):
         id = request.user.id
+
         user = UserInfo.objects.get(id=id)
         if user.authentication_status != 1:
             return Response({'msg': '请等待回复，不要重复操作'}, status=status.HTTP_400_BAD_REQUEST)
@@ -60,6 +62,7 @@ class TeacherAuthenticatedAPIView(APIView):
             serializers.save()
             user.authentication_status = 2
             user.save()
+            send_email('教师')
             return Response(serializers.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)

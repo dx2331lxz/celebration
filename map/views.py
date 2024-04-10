@@ -32,7 +32,6 @@ class LightAPIView(APIView):
     permission_classes = [CustomPermission]
     def post(self, request):
         userid = request.user.id
-
         lon = request.data.get('lon')
         lat = request.data.get('lat')
         if not lon or not lat:

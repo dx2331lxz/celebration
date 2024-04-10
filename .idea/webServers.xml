@@ -5,7 +5,14 @@
       <webServer id="c956c6a1-067e-4f2d-8424-9c8a9b5ade61" name="有点贵">
         <fileTransfer rootFolder="/www/wwwroot/celebration" accessType="SFTP" host="121.36.67.169" port="22" sshConfigId="c3317231-0d9d-48a0-8749-c9129b5367b0" sshConfig="root@121.36.67.169:22 password">
           <advancedOptions>
-            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" isUseSudo="true" />
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="87fda098-bfa3-4959-b436-9738e425d80a" name="有点贵2">
+        <fileTransfer rootFolder="/www/wwwroot/celebration" accessType="SFTP" host="121.36.67.169" port="22" sshConfigId="24485865-0d85-4625-9c9b-8abe3c6a2802" sshConfig="root@121.36.67.169:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
         </fileTransfer>
       </webServer>

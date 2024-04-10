@@ -18,6 +18,8 @@ class UserInfo(models.Model):
     description = models.CharField(max_length=200, null=True, blank=True, verbose_name='自我介绍')
     phone = models.CharField(max_length=20, null=True, blank=True, verbose_name='电话号码')
     email = models.EmailField(verbose_name='邮箱', null=True, blank=True)
+    wechat = models.CharField(max_length=50, null=True, blank=True, verbose_name='微信号')
+    qq = models.CharField(max_length=50, null=True, blank=True, verbose_name='QQ号')
     # 认证状态
     authentication_status_choices = [
         (1, '未认证'),

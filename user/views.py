@@ -196,6 +196,49 @@ class DescriptionAPIView(APIView):
         user = models.UserInfo.objects.get(id=id)
         return Response({'description': user.description}, status=status.HTTP_200_OK)
 
+# 微信号
+class WechatAPIView(APIView):
+    def post(self, request):
+        id = request.user.id
+        user = models.UserInfo.objects.get(id=id)
+        wechat = request.data.get('wechat')
+        user.wechat = wechat
+        user.save()
+        return Response({'code': 200, 'msg': '修改成功'}, status=status.HTTP_200_OK)
+
+    def get(self, request):
+        id = request.user.id
+        user = models.UserInfo.objects.get(id=id)
+        return Response({'wechat': user.wechat}, status=status.HTTP_200_OK)
+
+# QQ号
+class QQAPIView(APIView):
+    def post(self, request):
+        id = request.user.id
+        user = models.UserInfo.objects.get(id=id)
+        qq = request.data.get('qq')
+        user.qq = qq
+        user.save()
+        return Response({'code': 200, 'msg': '修改成功'}, status=status.HTTP_200_OK)
+
+    def get(self, request):
+        id = request.user.id
+        user = models.UserInfo.objects.get(id=id)
+        return Response({'qq': user.qq}, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # 获取自身认证信息
 

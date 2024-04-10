@@ -6,4 +6,5 @@ urlpatterns = [
     path('discuss/', views.DiscussAPIView.as_view()),
     path('comment/', views.CommentAPIView.as_view()),
     path('like/', views.LikeAPIView.as_view()),
+    path('image/', views.ImageAPIView.as_view()),
 ]
